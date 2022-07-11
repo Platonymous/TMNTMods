@@ -1,0 +1,8 @@
+﻿{
+  "Id": "Platonymous.SkipIntro",
+  "Name": "Skip Intro",
+  "Author": "Platonymous",
+  "Version": "1.0.0",
+  "Description": "Skips the games Intro",
+  "EntryFile": "SkipIntro.dll"
+}

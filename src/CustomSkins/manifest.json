@@ -1,0 +1,8 @@
+﻿{
+  "Id": "Platonymous.CustomSkins",
+  "Name": "Custom Skins",
+  "Author": "Platonymous",
+  "Version": "1.0.0",
+  "Description": "Allows adding selectable skins to fighter",
+  "EntryFile": "CustomSkins.dll"
+}
