@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SkipIntro", "SkipIntro\Skip
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomSkins", "CustomSkins\CustomSkins.csproj", "{1545BD0C-DC4D-4321-BF3A-E00DEEB5BB98}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Arena", "Arena\Arena.csproj", "{576E51F0-9CC3-4CE5-B14E-FABCEADC7B14}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{1545BD0C-DC4D-4321-BF3A-E00DEEB5BB98}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1545BD0C-DC4D-4321-BF3A-E00DEEB5BB98}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1545BD0C-DC4D-4321-BF3A-E00DEEB5BB98}.Release|Any CPU.Build.0 = Release|Any CPU
+		{576E51F0-9CC3-4CE5-B14E-FABCEADC7B14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{576E51F0-9CC3-4CE5-B14E-FABCEADC7B14}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{576E51F0-9CC3-4CE5-B14E-FABCEADC7B14}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{576E51F0-9CC3-4CE5-B14E-FABCEADC7B14}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

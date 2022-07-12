@@ -1,0 +1,8 @@
+﻿{
+  "Id": "Platonymous.Arena",
+  "Name": "Arena",
+  "Author": "Platonymous",
+  "Version": "1.0.0",
+  "Description": "Makes the Arena Stage available",
+  "EntryFile": "Arena.dll"
+}
