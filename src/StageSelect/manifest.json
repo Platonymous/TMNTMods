@@ -1,0 +1,8 @@
+﻿{
+  "Id": "Platonymous.StageSelect",
+  "Name": "StageSelect",
+  "Author": "Platonymous",
+  "Version": "1.0.0",
+  "Description": "Adds the Stage-Select Playmode",
+  "EntryFile": "StageSelect.dll"
+}
