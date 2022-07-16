@@ -2,7 +2,8 @@
   "Id": "Platonymous.Arena",
   "Name": "Arena",
   "Author": "Platonymous",
-  "Version": "1.0.0",
+  "Version": "1.0.1",
   "Description": "Makes the Arena Stage available",
-  "EntryFile": "Arena.dll"
+  "EntryFile": "Arena.dll",
+  "MinimumApiVersion": "1.1.0"
 }

@@ -2,7 +2,8 @@
   "Id": "Platonymous.CustomSkins",
   "Name": "Custom Skins",
   "Author": "Platonymous",
-  "Version": "1.0.0",
+  "Version": "1.0.2",
   "Description": "Allows adding selectable skins to fighter",
-  "EntryFile": "CustomSkins.dll"
+  "EntryFile": "CustomSkins.dll",
+  "MinimumApiVersion": "1.1.0"
 }

@@ -1,0 +1,57 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<Author>Platonymous</Author>
+		<Platforms>AnyCPU</Platforms>
+		<PlatformTarget>AnyCPU</PlatformTarget>
+		<TargetFramework>net452</TargetFramework>
+		<OutputPath>bin\Release\</OutputPath>
+		<GamePath>C:\Program Files (x86)\Steam\steamapps\common\TMNT</GamePath>
+		<OutputType>library</OutputType>
+	</PropertyGroup>
+
+	<Import Project="$(SolutionDir)\private.targets" />
+
+	<ItemGroup>
+		<None Update="manifest.json">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Reference Include="0ModApi">
+			<HintPath>$(GamePath)\0ModApi.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="ParisEngine">
+			<HintPath>$(GamePath)\ParisEngine.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="TMNT">
+			<HintPath>$(GamePath)\TMNT.exe</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="ParisEngine">
+			<HintPath>$(GamePath)\ParisEngine.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="FNA">
+			<HintPath>$(GamePath)\FNA.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="Harmony">
+			<HintPath>$(GamePath)\0Harmony.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+	</ItemGroup>
+	
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<ItemGroup>
+			<AllFiles Include="$(TargetDir)**\*.*" Exclude="$(TargetDir)\0Harmony.dll;$(TargetDir)**\*.pdb" />
+		</ItemGroup>
+		<Copy SourceFiles="@(AllFiles)" DestinationFolder="$(GamePath)\Mods\$(TargetName)\%(RecursiveDir)"></Copy>
+		<Copy SourceFiles="@(AllFiles)" DestinationFolder="$(SolutionDir)\_dev\$(TargetName)\$(TargetName)\%(RecursiveDir)"></Copy>
+
+		<ZipDirectory Overwrite="true" SourceDirectory="$(SolutionDir)\_dev\$(TargetName)" DestinationFile="$(SolutionDir)\..\releases\$(TargetName)_$(Version).zip" />
+	</Target>
+</Project>

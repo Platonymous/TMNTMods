@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using ModLoader.Content;
 using Paris.Engine.Context;
 using Paris.Engine.System.Localisation;
 using Paris.Game.Data;
@@ -10,7 +9,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
 
 namespace CustomSkins
 {
@@ -120,6 +118,8 @@ namespace CustomSkins
             if(CurrentSkin >= SkinsData.Count)
                 CurrentSkin = -1;
 
+            Reset();
+            CustomSkinsMod.Singleton.ApplyAll(this);
             ApplySkin();
         }
 
@@ -129,12 +129,13 @@ namespace CustomSkins
             if(CurrentSkin < -1)
                 CurrentSkin = SkinsData.Count - 1;
 
+            Reset();
+            CustomSkinsMod.Singleton.ApplyAll(this);
             ApplySkin();
         }
 
         public void ApplySkin()
         {
-            Reset();
             if (CurrentSkin >= 0)
             {
                 var skin = SkinsData[CurrentSkin];

@@ -15,9 +15,34 @@ namespace SkipIntro
         public void ModEntry(IModHelper helper)
         {
             Helper = helper;
-            ModConfig = helper.Content.LoadJson<Config>("config.json", new Config(), true);
+            ModConfig = helper.Config.LoadConfig<Config>();
             
             helper.Events.ContextSwitched += Events_ContextSwitched;
+            helper.Events.GameInitialized += Events_GameInitialized;
+        }
+
+        private void Events_GameInitialized(object sender, ModLoader.Events.GameInitializedEventArgs e)
+        {
+            Helper.Config.SetOptionsMenuEntry("logos", "Skip Logos",
+                (s) =>
+                {
+                    ModConfig.Logos = (s.Choice == "ON");
+                    Helper.Config.SaveConfig(ModConfig);
+                }, () => ModConfig.Logos ? "ON" : "OFF", "ON", "OFF");
+
+            Helper.Config.SetOptionsMenuEntry("howto", "Skip HowTo",
+                (s) =>
+                {
+                    ModConfig.HowTo = (s.Choice == "ON");
+                    Helper.Config.SaveConfig(ModConfig);
+                }, () => ModConfig.HowTo ? "ON" : "OFF", "ON", "OFF");
+
+            Helper.Config.SetOptionsMenuEntry("video", "Skip Video",
+                (s) =>
+                {
+                    ModConfig.Video = (s.Choice == "ON");
+                    Helper.Config.SaveConfig(ModConfig);
+                }, () => ModConfig.Video ? "ON" : "OFF", "ON", "OFF");
         }
 
         private void Events_ContextSwitched(object sender, ModLoader.Events.ContextSwitchedEventArgs e)

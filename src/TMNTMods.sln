@@ -11,6 +11,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Arena", "Arena\Arena.csproj
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StageSelect", "StageSelect\StageSelect.csproj", "{06FA5BAC-4388-416E-B60F-AADAFD9F0ED0}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "targets", "targets", "{E295C97E-9011-4990-ADF6-70CDC3E8E69E}"
+	ProjectSection(SolutionItems) = preProject
+		common.targets = common.targets
+		private.targets = private.targets
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

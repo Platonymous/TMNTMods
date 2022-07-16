@@ -2,7 +2,8 @@
   "Id": "Platonymous.SkipIntro",
   "Name": "Skip Intro",
   "Author": "Platonymous",
-  "Version": "1.1.0",
+  "Version": "1.1.1",
   "Description": "Skips the games Intro",
-  "EntryFile": "SkipIntro.dll"
+  "EntryFile": "SkipIntro.dll",
+  "MinimumApiVersion": "1.1.0"
 }

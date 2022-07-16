@@ -14,6 +14,7 @@ using Paris.System.FSM;
 using Paris.System.Input;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 namespace Arena
@@ -21,6 +22,7 @@ namespace Arena
     public class ArenaMod : IMod
     {
         Harmony harmony;
+        static int ArenaIndex;
 
         public void ModEntry(IModHelper helper)
         {
@@ -41,7 +43,7 @@ namespace Arena
             FSM fsm = (FSM) typeof(MainMenu).GetField("_fsm", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(__instance);
             SelectionMenuControl start = (SelectionMenuControl) typeof(MainMenu).GetField("_startGameSelection", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(__instance);
 
-            if (fsm.CurrentState == 3 && start.Selection == 2)
+            if (fsm.CurrentState == 3 && start.Selection == ArenaIndex)
                 ContextManager.Singleton.SwitchToContext(@"2d\Level\Scene2d\Arena", 0.1f, Color.Black);
         }
 
@@ -50,6 +52,7 @@ namespace Arena
             if (enumType.Name == "StartGameItems")
             {
                 var list = new List<string>(__result);
+                ArenaIndex = list.Count();
                 list.Add("Arena");
                 __result = list.ToArray();
                 typeof(LocManager).GetMethod("AddLocToLanguage", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(LocManager.Singleton, new object[] { LocManager.Singleton.CurrentLanguage, "mnuArena", "Arena" });

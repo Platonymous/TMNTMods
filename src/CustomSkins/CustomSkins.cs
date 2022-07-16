@@ -1,7 +1,10 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using HarmonyLib;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using ModLoader;
 using Paris.Engine.Context;
+using Paris.Engine.Menu;
+using Paris.Engine.Menu.Control;
 using Paris.Game.Data;
 using Paris.Game.Menu;
 using Paris.Game.Menu.Control;
@@ -17,9 +20,45 @@ namespace CustomSkins
     {
         public Dictionary<string, SkinModData> Skins = new Dictionary<string, SkinModData>();
         public IModHelper Helper;
+        static bool pressedRight;
+        static bool pressedLeft;
+
+        public static CustomSkinsMod Singleton;
+
+        public CustomSkinsMod()
+        {
+            Singleton = this;
+        }
+
+        public void ApplyAll(SkinModData sender)
+        {
+            foreach (var skin in Skins.Values)
+                if (skin != sender)
+                    skin.Reset();
+
+            foreach (var skin in Skins.Values)
+                if (skin != sender)
+                    skin.ApplySkin();
+        }
+
         public void ModEntry(IModHelper helper)
         {
             Helper = helper;
+
+            var harmony = new Harmony("Platonymous.CustomSkins");
+
+            harmony.Patch(
+                original: typeof(MenuBase).GetMethod("PressedRight", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance),
+                postfix: new HarmonyMethod(typeof(CustomSkinsMod), nameof(PressedRight))
+                );
+
+
+            harmony.Patch(
+                original: typeof(MenuBase).GetMethod("PressedLeft", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance),
+                postfix: new HarmonyMethod(typeof(CustomSkinsMod), nameof(PressedLeft))
+                );
+
+
             foreach (var pack in helper.GetContentPacks())
                 try
                 {
@@ -59,6 +98,19 @@ namespace CustomSkins
 
         }
 
+        public  static void PressedRight()
+        {
+            pressedRight = true;
+        }
+
+
+
+        public static void PressedLeft()
+        {
+            pressedLeft = true;
+        }
+
+
         private void Events_AssetLoaded(object sender, ModLoader.Events.AssetLoadedEventArgs e)
         {
             foreach (var skin in Skins.Values)
@@ -66,31 +118,28 @@ namespace CustomSkins
                     if (skin.OriginalData[e.AssetName] == null)
                         skin.OriginalData[e.AssetName] = new OriginalData((Texture2D)e.Asset);
                     else
-                        e.SetAsset(skin.OriginalData[e.AssetName].Texture);
+                    {
+                        skin.OriginalData[e.AssetName] = new OriginalData((Texture2D)e.Asset);
+                        foreach (var skindata in Skins.Values)
+                            if (skindata.OriginalData.ContainsKey(e.AssetName))
+                                skindata.ApplySkin();
+                    }
         }
 
         private void Events_ContextSwitched(object sender, ModLoader.Events.ContextSwitchedEventArgs e)
         {
             if(e.NewContext.Contains("Paris.Game.Menu.MainMenu"))
-            {
                 foreach (var skin in Skins.Values)
-                {
                     skin.Init();
-                    skin.CurrentSkin = -1;
-                    skin.Reset();
-                }
-            }
 
             if (e.NewContext.Contains("Paris.Game.Menu.CharacterSelect"))
-            {
                 foreach (var skin in Skins.Values)
                     skin.InitName();
-            }
         }
 
         private void Events_UpdateTicked(object sender, ModLoader.Events.UpdateTickEventArgs e)
         {
-            if ((InputManager.Singleton.IsKeyJustPressed(Keys.Right) || InputManager.Singleton.IsKeyJustPressed(Keys.Left)) && ContextManager.Singleton.CurrentContext is CharacterSelect context)
+            if ((pressedLeft || pressedRight) && ContextManager.Singleton.CurrentContext is CharacterSelect context)
             {
                 CharacterSelectionContainer container = (CharacterSelectionContainer)context.GetType().GetField("_charContainer", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(context);
                 if (container != null)
@@ -103,7 +152,7 @@ namespace CustomSkins
 
                         if (Skins.ContainsKey(charId))
                         {
-                            if (InputManager.Singleton.IsKeyJustPressed(Keys.Right))
+                            if (pressedRight)
                                 Skins[charId].Next();
                             else
                                 Skins[charId].Previous();
@@ -115,6 +164,9 @@ namespace CustomSkins
                 }
 
             }
+
+            pressedLeft = false;
+            pressedRight = false;
         }
     }
 }
