@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<AssemblyName>CustomSkins</AssemblyName>
-		<RootNamespace>CustomSkins</RootNamespace>
-		<Version>1.1.0</Version>
+		<AssemblyName>IronTurtle</AssemblyName>
+		<RootNamespace>IronTurtle</RootNamespace>
+		<Version>1.0.0</Version>
 	</PropertyGroup>
-
+	
 	<Import Project="$(SolutionDir)\common.targets" />
 
 </Project>

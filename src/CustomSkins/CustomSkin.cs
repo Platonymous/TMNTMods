@@ -1,4 +1,6 @@
-﻿using ModLoader.Content;
+﻿using Microsoft.Xna.Framework.Audio;
+using ModLoader.Content;
+using Paris.Engine.Audio;
 using System.Collections.Generic;
 
 namespace CustomSkins
@@ -11,6 +13,8 @@ namespace CustomSkins
         public string MenuColor { get; set; } = "DarkSlateGray"; 
         
         public List<TexturePatch> Patches  { get; set;} = new List<TexturePatch>();
+
+        internal List<SoundPatch> AudioPatches { get; set;} = new List<SoundPatch>();
 
         internal IContentHelper Content { get; set; }
     }

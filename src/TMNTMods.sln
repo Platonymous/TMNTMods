@@ -17,6 +17,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "targets", "targets", "{E295
 		private.targets = private.targets
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IronTurtle", "IronTurtle\IronTurtle.csproj", "{05BEA529-D323-4ED7-8217-C686A40C3A21}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{06FA5BAC-4388-416E-B60F-AADAFD9F0ED0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{06FA5BAC-4388-416E-B60F-AADAFD9F0ED0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{06FA5BAC-4388-416E-B60F-AADAFD9F0ED0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{05BEA529-D323-4ED7-8217-C686A40C3A21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{05BEA529-D323-4ED7-8217-C686A40C3A21}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{05BEA529-D323-4ED7-8217-C686A40C3A21}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{05BEA529-D323-4ED7-8217-C686A40C3A21}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

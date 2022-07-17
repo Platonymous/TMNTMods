@@ -1,7 +1,10 @@
 ﻿using HarmonyLib;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using ModLoader;
+using ModLoader.Content;
+using Paris.Engine.Audio;
 using Paris.Engine.Context;
 using Paris.Engine.Menu;
 using Paris.Engine.Menu.Control;
@@ -12,6 +15,8 @@ using Paris.Game.System;
 using Paris.System.Input;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Reflection;
 
 namespace CustomSkins
@@ -58,7 +63,12 @@ namespace CustomSkins
                 postfix: new HarmonyMethod(typeof(CustomSkinsMod), nameof(PressedLeft))
                 );
 
+            harmony.Patch(
+               original: typeof(AudioManager).GetMethod("Init", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance),
+               postfix: new HarmonyMethod(typeof(CustomSkinsMod), nameof(PreloadAudio))
+               );
 
+            
             foreach (var pack in helper.GetContentPacks())
                 try
                 {
@@ -66,6 +76,16 @@ namespace CustomSkins
                     foreach (var skin in contentPack.Skins) {
                         skin.Content = pack.Content;
                         var skinId = skin.Character == "Leonardo" ? "Leo" : skin.Character;
+
+                        for (int i = 0; i < skin.Patches.Count; i++)
+                            if (skin.Patches[i] is TexturePatch tp && tp.Asset.StartsWith("Audio\\"))
+                            {
+                                var ac = File.ReadAllBytes(Path.Combine(pack.Manifest.Folder, tp.Patch));
+                                skin.AudioPatches.Add(new SoundPatch(tp.Asset.Substring("Audio\\".Length),ac));
+                            }
+
+                        skin.Patches.RemoveAll(p => p.Asset.StartsWith("Audio\\"));
+
                         if (!Skins.ContainsKey(skinId))
                         {
                             var skindata = new SkinModData(skinId);
@@ -84,7 +104,6 @@ namespace CustomSkins
 
             try
             {
-
                 helper.Events.ContextSwitched += Events_ContextSwitched;
                 helper.Events.AssetLoaded += Events_AssetLoaded;
 
@@ -96,6 +115,14 @@ namespace CustomSkins
                 helper.Console.Trace(e.StackTrace);
             }
 
+        }
+
+        public static void PreloadAudio()
+        {
+           foreach(var skin in Singleton.Skins.Values)
+                foreach(var data in skin.SkinsData)
+                    foreach(var audio in data.AudioPatches)
+                        audio.Init();
         }
 
         public  static void PressedRight()
@@ -113,17 +140,17 @@ namespace CustomSkins
 
         private void Events_AssetLoaded(object sender, ModLoader.Events.AssetLoadedEventArgs e)
         {
-            foreach (var skin in Skins.Values)
-                if (skin.OriginalData.ContainsKey(e.AssetName))
-                    if (skin.OriginalData[e.AssetName] == null)
-                        skin.OriginalData[e.AssetName] = new OriginalData((Texture2D)e.Asset);
-                    else
-                    {
-                        skin.OriginalData[e.AssetName] = new OriginalData((Texture2D)e.Asset);
-                        foreach (var skindata in Skins.Values)
-                            if (skindata.OriginalData.ContainsKey(e.AssetName))
-                                skindata.ApplySkin();
-                    }
+                foreach (var skin in Skins.Values)
+                    if (e.Asset is Texture2D t && skin.OriginalData.ContainsKey(e.AssetName))
+                        if (skin.OriginalData[e.AssetName] == null)
+                            skin.OriginalData[e.AssetName] = new OriginalData(t);
+                        else
+                        {
+                            skin.OriginalData[e.AssetName] = new OriginalData(t);
+                            foreach (var skindata in Skins.Values)
+                                if (skindata.OriginalData.ContainsKey(e.AssetName))
+                                    skindata.ApplySkin();
+                        }
         }
 
         private void Events_ContextSwitched(object sender, ModLoader.Events.ContextSwitchedEventArgs e)

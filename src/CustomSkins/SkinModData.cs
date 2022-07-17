@@ -141,6 +141,9 @@ namespace CustomSkins
                 var skin = SkinsData[CurrentSkin];
                 foreach (var patch in skin.Patches)
                     PatchTexture(patch.Asset,patch);
+                
+                foreach (var patch in skin.AudioPatches)
+                    patch.Apply();
 
                 SetName(skin.Name);
                 Character.MenuColor = GetColorByName(skin.MenuColor);
@@ -165,8 +168,10 @@ namespace CustomSkins
                     OriginalData[org].Texture.SetData(OriginalData[org].Data);
                     OriginalData[org] = null;
                 }
-            
 
+            foreach (var skin in SkinsData)
+                foreach (var patch in skin.AudioPatches)
+                    patch.Reset();
 
 
             if (OriginalName != null)
