@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ModLoader;
 using Paris;
-using Paris.Engine;
 using Paris.Engine.Context;
 using Paris.Engine.Cutscenes;
 using Paris.Engine.Graphics;
@@ -12,14 +11,14 @@ using Paris.Engine.Scene;
 using Paris.Engine.System.Achievements;
 using Paris.Engine.System.Localisation;
 using Paris.Game;
-using Paris.Game.Actor;
-using Paris.Game.Actor.Camera;
 using Paris.Game.HUD;
 using Paris.Game.Menu;
 using Paris.Game.System;
 using Paris.System.FSM;
+using Paris.System.Input;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 
@@ -29,6 +28,7 @@ namespace Arena
     {
         Harmony harmony;
         static int ArenaIndex;
+        static Effect crt = null;
         static IModHelper Helper;
 
         public void ModEntry(IModHelper helper)
@@ -43,9 +43,38 @@ namespace Arena
             harmony.Patch(
                 original: typeof(MainMenu).GetMethod("Accept", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance),
                 postfix: new HarmonyMethod(typeof(ArenaMod), nameof(Accept))
-                           );
+                );
+
+            harmony.Patch(
+                            original: typeof(CheatManager).GetMethod("IsActive", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance),
+                            postfix: new HarmonyMethod(typeof(ArenaMod), nameof(IsActive))
+                            );
+
+            harmony.Patch(
+                            original: typeof(Scene2d).GetMethod("Tick", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance),
+                            prefix: new HarmonyMethod(typeof(ArenaMod), nameof(Tick))
+                            );
         }
 
+        public static void Tick(Scene2d __instance)
+        {
+            __instance.SpeedRatio = 3f;
+        }
+
+        public static void IsActive(int cheatId, ref bool __result)
+        {
+            if (cheatId == 42)
+                __result = true;
+
+            if (cheatId == 42)
+                __result = true;
+        }
+
+        public static void Begin(Renderer __instance, ref Effect effect)
+        {
+           
+            effect = crt;
+        }
 
         public static void Accept(MainMenu __instance)
         {

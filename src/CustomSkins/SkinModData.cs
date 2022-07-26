@@ -1,10 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Paris.Engine.Context;
 using Paris.Engine.System.Localisation;
 using Paris.Game.Data;
 using Paris.Game.System;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -16,13 +14,11 @@ namespace CustomSkins
     {
         public List<CustomSkin> SkinsData = new List<CustomSkin>();
 
-        public Dictionary<string,OriginalData> OriginalData = new Dictionary<string, OriginalData>();
-
-        public string OriginalName;
-
         public string CharacterId;
 
         public CharacterInfo Character;
+
+        string OriginalName;
 
         public Color MenuColor;
 
@@ -36,47 +32,12 @@ namespace CustomSkins
 
         public SkinModData(string charaterName)
         {
-            CharacterId = charaterName;
+            CharacterId = charaterName == "´Leonardo" ? "Leo" : charaterName;
         }
 
         public void SetName(string name)
         {
             typeof(LocManager).GetMethod("AddLocToLanguage", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(LocManager.Singleton, new object[] { LocManager.Singleton.CurrentLanguage, Character.FullName.ID, name });
-        }
-
-        public void PatchTexture(string asset, TexturePatch patch)
-        {
-            try
-            {
-                if (OriginalData[asset] == null)
-                    OriginalData[asset] = new OriginalData(ContextManager.Singleton.LoadContent<Texture2D>(asset, false));
-
-                if (!patch.ShouldMerge)
-                {
-                    OriginalData[asset].Texture?.SetData(patch.PatchData);
-                    return;
-                }
-
-                Texture2D org = OriginalData[asset].Texture;
-                lock (org)
-                {
-                    Color[] colorDataOrg = new Color[org.Width * org.Height];
-                    org.GetData(colorDataOrg);
-                    for (int y = 0; y < org.Height; y++)
-                        for (int x = 0; x < org.Width; x++)
-                            if (patch.PatchData[y * org.Width + x] is Color c && c.A != 0)
-                            {
-                                colorDataOrg[y * org.Width + x] = c;
-                                if (c.A == 255 && c.R == 255 && c.G == 0 && c.B == 255)
-                                    colorDataOrg[y * org.Width + x] = Color.Transparent;
-                            }
-                    org.SetData(colorDataOrg);
-                }
-            }
-            catch(Exception ex)
-            {
-                
-            }
         }
 
         public void Init()
@@ -90,12 +51,8 @@ namespace CustomSkins
             foreach (var skin in SkinsData)
                 foreach (var patch in skin.Patches)
                 {
-                    if (!OriginalData.ContainsKey(patch.Asset))
-                        OriginalData.Add(patch.Asset, null);
-
                     var patchTexture = skin.Content.LoadContent<Texture2D>(patch.Patch.Replace(Path.GetExtension(patch.Patch),""));
-                    patch.PatchData = new Color[patchTexture.Width * patchTexture.Height];
-                    patchTexture.GetData(patch.PatchData);
+                    patch.PatchData = patchTexture;
                 }
 
             MenuColor = new Color(Character.MenuColor.R, Character.MenuColor.G, Character.MenuColor.B, Character.MenuColor.A);
@@ -140,8 +97,8 @@ namespace CustomSkins
             {
                 var skin = SkinsData[CurrentSkin];
                 foreach (var patch in skin.Patches)
-                    PatchTexture(patch.Asset,patch);
-                
+                    patch.Apply();
+
                 foreach (var patch in skin.AudioPatches)
                     patch.Apply();
 
@@ -162,24 +119,21 @@ namespace CustomSkins
 
         public void Reset()
         {
-            foreach (string org in OriginalData.Keys.ToList())
-                if (OriginalData[org] != null)
-                {
-                    OriginalData[org].Texture.SetData(OriginalData[org].Data);
-                    OriginalData[org] = null;
-                }
-
             foreach (var skin in SkinsData)
                 foreach (var patch in skin.AudioPatches)
                     patch.Reset();
 
+            foreach (var skin in SkinsData)
+                foreach (var patch in skin.Patches)
+                    patch.Reset();
 
             if (OriginalName != null)
                 SetName(OriginalName);
             Character.MenuColor = new Color(MenuColor.R, MenuColor.G, MenuColor.B, MenuColor.A);
             Character.MenuStarAColor = new Color(MenuStarAColor.R, MenuStarAColor.G, MenuStarAColor.B, MenuStarAColor.A);
             Character.MenuStarAColor = new Color(MenuStarBColor.R, MenuStarBColor.G, MenuStarBColor.B, MenuStarBColor.A);
-
         }
+
+
     }
 }

@@ -6,6 +6,7 @@ using ModLoader;
 using ModLoader.Content;
 using Paris.Engine.Audio;
 using Paris.Engine.Context;
+using Paris.Engine.Graphics;
 using Paris.Engine.Menu;
 using Paris.Engine.Menu.Control;
 using Paris.Game.Data;
@@ -24,6 +25,7 @@ namespace CustomSkins
     public class CustomSkinsMod : IMod
     {
         public Dictionary<string, SkinModData> Skins = new Dictionary<string, SkinModData>();
+        public Dictionary<string, SkinTexture> Textures = new Dictionary<string, SkinTexture>();
         public IModHelper Helper;
         static bool pressedRight;
         static bool pressedLeft;
@@ -68,7 +70,13 @@ namespace CustomSkins
                postfix: new HarmonyMethod(typeof(CustomSkinsMod), nameof(PreloadAudio))
                );
 
-            
+            foreach(var method in typeof(Renderer).GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(m => m.Name == "DrawTexture" && m.GetParameters().Length >= 9))
+                harmony.Patch(
+               original: method,
+               prefix: new HarmonyMethod(typeof(CustomSkinsMod), nameof(DrawTexture))
+               );
+
+
             foreach (var pack in helper.GetContentPacks())
                 try
                 {
@@ -79,20 +87,18 @@ namespace CustomSkins
 
                         for (int i = 0; i < skin.Patches.Count; i++)
                             if (skin.Patches[i] is TexturePatch tp && tp.Asset.StartsWith("Audio\\"))
-                            {
-                                var ac = File.ReadAllBytes(Path.Combine(pack.Manifest.Folder, tp.Patch));
-                                skin.AudioPatches.Add(new SoundPatch(tp.Asset.Substring("Audio\\".Length),ac));
-                            }
+                                skin.AudioPatches.Add(new SoundPatch(tp.Asset.Substring("Audio\\".Length), File.ReadAllBytes(Path.Combine(pack.Manifest.Folder, tp.Patch))));
 
                         skin.Patches.RemoveAll(p => p.Asset.StartsWith("Audio\\"));
 
                         if (!Skins.ContainsKey(skinId))
-                        {
-                            var skindata = new SkinModData(skinId);
-                            Skins.Add(skinId, skindata);
-                        }
+                            Skins.Add(skinId, new SkinModData(skinId));
 
-                        if(!Skins[skinId].SkinsData.Contains(skin))
+                        foreach (var patch in skin.Patches)
+                            if (!Textures.ContainsKey(patch.Asset))
+                                Textures.Add(patch.Asset, null);
+
+                        if (!Skins[skinId].SkinsData.Contains(skin))
                             Skins[skinId].SkinsData.Add(skin);
                     }
                 }
@@ -115,6 +121,12 @@ namespace CustomSkins
                 helper.Console.Trace(e.StackTrace);
             }
 
+        }
+
+        public static void DrawTexture(ref Texture2D texture)
+        {
+            while (texture is SkinTexture st && st.Skin is Texture2D t)
+                texture = t;
         }
 
         public static void PreloadAudio()
@@ -140,24 +152,33 @@ namespace CustomSkins
 
         private void Events_AssetLoaded(object sender, ModLoader.Events.AssetLoadedEventArgs e)
         {
-                foreach (var skin in Skins.Values)
-                    if (e.Asset is Texture2D t && skin.OriginalData.ContainsKey(e.AssetName))
-                        if (skin.OriginalData[e.AssetName] == null)
-                            skin.OriginalData[e.AssetName] = new OriginalData(t);
-                        else
-                        {
-                            skin.OriginalData[e.AssetName] = new OriginalData(t);
-                            foreach (var skindata in Skins.Values)
-                                if (skindata.OriginalData.ContainsKey(e.AssetName))
-                                    skindata.ApplySkin();
-                        }
+            if (e.Asset is Texture2D t && Textures.ContainsKey(e.AssetName))
+                if (Textures[e.AssetName] is SkinTexture st)
+                {
+                    st.Original = t;
+                    e.SetAsset(st);
+                }
+                else
+                {
+                    Textures[e.AssetName] = new SkinTexture(t);
+                    e.SetAsset(Textures[e.AssetName]);
+                }
         }
 
         private void Events_ContextSwitched(object sender, ModLoader.Events.ContextSwitchedEventArgs e)
         {
-            if(e.NewContext.Contains("Paris.Game.Menu.MainMenu"))
+            if (e.NewContext.Contains("Paris.Game.Menu.MainMenu"))
+            {
+                foreach (var t in Textures.Keys.ToList())
+                {
+                    ContextManager.Singleton.ContentManager.UnloadAsset(t);
+                    ContextManager.Singleton.LoadContent<Texture2D>(t,true,true);
+                }
+
                 foreach (var skin in Skins.Values)
                     skin.Init();
+                
+            }
 
             if (e.NewContext.Contains("Paris.Game.Menu.CharacterSelect"))
                 foreach (var skin in Skins.Values)
@@ -175,7 +196,7 @@ namespace CustomSkins
                     if (selection >= 0 && selection < CharacterManager.Singleton.Characters.Count)
                     {
                         CharacterInfo character = CharacterManager.Singleton.Characters[selection];
-                        string charId = character.InternalName == "Leo" ? "Leonardo" : character.InternalName;
+                        string charId = character.InternalName;
 
                         if (Skins.ContainsKey(charId))
                         {

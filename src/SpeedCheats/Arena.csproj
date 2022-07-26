@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<AssemblyName>CustomSkins</AssemblyName>
-		<RootNamespace>CustomSkins</RootNamespace>
-		<Version>1.2.1</Version>
+		<AssemblyName>Arena</AssemblyName>
+		<RootNamespace>Arena</RootNamespace>
+		<Version>1.0.1</Version>
 	</PropertyGroup>
-
+	
 	<Import Project="$(SolutionDir)\common.targets" />
 
 </Project>

@@ -1,12 +1,11 @@
-﻿using Microsoft.Xna.Framework.Audio;
-using ModLoader.Content;
-using Paris.Engine.Audio;
+﻿using ModLoader.Content;
 using System.Collections.Generic;
 
 namespace CustomSkins
 {
     public class CustomSkin
     {
+        internal string CharId => Character == "Leonardo" ? "Leo" : Character;
         public string Character { get; set;}
         public string Name { get; set;}
 
