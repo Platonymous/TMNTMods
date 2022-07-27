@@ -3,7 +3,7 @@
 	<PropertyGroup>
 		<AssemblyName>SkipIntro</AssemblyName>
 		<RootNamespace>SkipIntro</RootNamespace>
-		<Version>1.1.1</Version>
+		<Version>1.1.2</Version>
 	</PropertyGroup>
 
 	<Import Project="$(SolutionDir)\common.targets" />

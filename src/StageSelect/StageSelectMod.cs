@@ -51,7 +51,6 @@ namespace StageSelect
                 int si = start.Selection - FirstStage;
                 if (Stages.Count > si)
                 {
-                    Console.WriteLine(Stages[si]);
                     string[] n = Stages[si].Split(':');
                     ContextManager.Singleton.SwitchToContext(@"2d\Level\Scene2d\Stage\" + n[0] + @"\" + n[1], 0.1f, Color.Black);
                 }

@@ -16,7 +16,7 @@ namespace CustomSkins
 
         internal void Apply()
         {
-            if (CustomSkinsMod.Singleton.Textures.TryGetValue(Asset, out SkinTexture value))
+            if (CustomSkinsMod.Singleton.Textures.TryGetValue(Asset, out SkinTexture value) && value != null)
                 if (!ShouldMerge)
                     value.SetSkin(PatchData);
                 else
@@ -42,7 +42,7 @@ namespace CustomSkins
 
         internal void Reset()
         {
-            if (CustomSkinsMod.Singleton.Textures.TryGetValue(Asset, out SkinTexture value))
+            if (CustomSkinsMod.Singleton.Textures.TryGetValue(Asset, out SkinTexture value) && value != null)
                 value.Reset();
         }
     }

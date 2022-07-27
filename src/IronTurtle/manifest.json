@@ -2,7 +2,7 @@
   "Id": "Platonymous.ExtraChallenge",
   "Name": "IronTurtle",
   "Author": "Platonymous",
-  "Version": "1.0.0",
+  "Version": "1.0.1",
   "Description": "Adds IronTurtle difficulty",
   "EntryFile": "IronTurtle.dll",
   "MinimumApiVersion": "1.1.0"

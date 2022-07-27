@@ -50,6 +50,7 @@ namespace CustomSkins
 
         public void ModEntry(IModHelper helper)
         {
+            Singleton = this;
             Helper = helper;
 
             var harmony = new Harmony("Platonymous.CustomSkins");
@@ -149,9 +150,10 @@ namespace CustomSkins
             pressedLeft = true;
         }
 
-
+        public List<string> AssetsLoaded = new List<string>();
         private void Events_AssetLoaded(object sender, ModLoader.Events.AssetLoadedEventArgs e)
         {
+            AssetsLoaded.Add(e.AssetName);
             if (e.Asset is Texture2D t && Textures.ContainsKey(e.AssetName))
                 if (Textures[e.AssetName] is SkinTexture st)
                 {

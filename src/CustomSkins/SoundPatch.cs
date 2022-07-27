@@ -57,8 +57,7 @@ namespace CustomSkins
             }
             catch(Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
+                
             }
             initialized = true;
         }

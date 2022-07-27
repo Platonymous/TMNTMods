@@ -2,7 +2,7 @@
   "Id": "Platonymous.GameSpeed",
   "Name": "GameSpeed",
   "Author": "Platonymous",
-  "Version": "1.0.0",
+  "Version": "1.0.1",
   "Description": "Change the speed of the game",
   "EntryFile": "GameSpeed.dll",
   "MinimumApiVersion": "1.1.0"
