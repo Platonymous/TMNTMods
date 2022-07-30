@@ -86,12 +86,23 @@ namespace IronTurtle
                    postfix: new HarmonyMethod(typeof(IronTurtleMod), nameof(GetInt))
                );
 
-            HarmonyMod.Patch(
+                HarmonyMod.Patch(
+                   original: typeof(MultiplayerInt).GetMethod(nameof(MultiplayerInt.Get), new Type[] {typeof(int)}),
+                   postfix: new HarmonyMethod(typeof(IronTurtleMod), nameof(GetMInt))
+               );
+
+                HarmonyMod.Patch(
                    original: typeof(StageData).GetMethod("GetChallenges", new Type[] { typeof(Difficulty) }),
                    postfix: new HarmonyMethod(typeof(IronTurtleMod), nameof(GetChallenges))
                );
 
-            HarmonyMod.Patch(
+                HarmonyMod.Patch(
+                   original: typeof(EnemySpawn).GetMethod("Init", BindingFlags.Public | BindingFlags.Instance),
+                   postfix: new HarmonyMethod(typeof(IronTurtleMod), nameof(EnemySpawnInit))
+               );
+
+
+                HarmonyMod.Patch(
                    original: typeof(Boss).GetMethod("ComputeMaxHP", BindingFlags.NonPublic | BindingFlags.Instance),
                    prefix: new HarmonyMethod(typeof(IronTurtleMod), nameof(ComputeMaxHP))
                );
@@ -119,6 +130,11 @@ namespace IronTurtle
             }
         }
 
+        public static void EnemySpawnInit(EnemySpawn __instance)
+        {
+            if (IronIndex == (int)GameInfo.Singleton.DifficultySetting)
+                __instance.MaxHP = (__instance.MaxHP * 3) + 30;
+        }
         public static void GetChallenges(StageData __instance, Difficulty difficulty, ref List<ChallengeInfo> __result)
         {
             if (IronIndex == (int)difficulty)
@@ -135,14 +151,14 @@ namespace IronTurtle
         public static void GetDamage(ref float __result)
         {
             if (IronIndex == (int)GameInfo.Singleton.DifficultySetting)
-                __result *= 2.5f;
+                __result *= 4f;
         }
 
         public static bool ComputeMaxHP(Boss __instance)
         {
             if (__instance.HasAuthority && IronIndex == (int)GameInfo.Singleton.DifficultySetting)
             {
-                __instance.MaxHP += (PlayerManager.Singleton.Players.Count) * __instance.MaxHPGainPerAdditionalPlayer;
+                __instance.MaxHP += 7 * __instance.MaxHPGainPerAdditionalPlayer;
                 __instance.HP = __instance.MaxHP;
                 __instance.GetType().GetField("_replicateMaxHP", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(__instance, __instance.CanReplicate);
                 return false;
@@ -169,8 +185,17 @@ namespace IronTurtle
 
             return true;
         }
+        public static void GetMInt(MultiplayerInt __instance, ref int __result)
+        {
+            if (IronIndex == (int)GameInfo.Singleton.DifficultySetting)
+            {
+                __result = __instance.Values.Last();
+                if (__result > __instance.Values[0])
+                    __result += 2;
+            }
+        }
 
-        public static void GetInt(DifficultyInt __instance, Difficulty difficulty, ref int __result)
+            public static void GetInt(DifficultyInt __instance, Difficulty difficulty, ref int __result)
         {
             if (IronIndex == (int)difficulty)
                 if (__instance.Easy == 1 && __instance.Hard == 3)
