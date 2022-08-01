@@ -1,0 +1,11 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<AssemblyName>OnePunch</AssemblyName>
+		<RootNamespace>OnePunch</RootNamespace>
+		<Version>1.0.1</Version>
+	</PropertyGroup>
+	
+	<Import Project="$(SolutionDir)\common.targets" />
+
+</Project>

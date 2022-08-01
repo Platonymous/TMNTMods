@@ -1,0 +1,9 @@
+﻿{
+  "Id": "Platonymous.OnePunch",
+  "Name": "OnePunch",
+  "Author": "Platonymous",
+  "Version": "1.0.0",
+  "Description": "Adds OnePunchTurtle difficulty",
+  "EntryFile": "OnePunch.dll",
+  "MinimumApiVersion": "1.1.0"
+}
