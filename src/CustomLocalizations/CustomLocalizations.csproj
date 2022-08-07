@@ -1,0 +1,10 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<AssemblyName>CustomLocalizations</AssemblyName>
+		<RootNamespace>CustomLocalizations</RootNamespace>
+		<Version>1.0.0</Version>
+	</PropertyGroup>
+
+	<Import Project="$(SolutionDir)\common.targets" />
+</Project>

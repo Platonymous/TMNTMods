@@ -25,6 +25,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BossRun", "BossRun\BossRun.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnePunch", "OnePunch\OnePunch.csproj", "{DC143CEF-439C-43D4-9F73-D1818C106E14}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomLocalizations", "CustomLocalizations\CustomLocalizations.csproj", "{248FCD73-6DBF-4609-AE59-4F6890776524}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{DC143CEF-439C-43D4-9F73-D1818C106E14}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DC143CEF-439C-43D4-9F73-D1818C106E14}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DC143CEF-439C-43D4-9F73-D1818C106E14}.Release|Any CPU.Build.0 = Release|Any CPU
+		{248FCD73-6DBF-4609-AE59-4F6890776524}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{248FCD73-6DBF-4609-AE59-4F6890776524}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{248FCD73-6DBF-4609-AE59-4F6890776524}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{248FCD73-6DBF-4609-AE59-4F6890776524}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

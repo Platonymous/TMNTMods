@@ -1,0 +1,9 @@
+﻿{
+  "Id": "Platonymous.CustomLocalizations",
+  "Name": "Custom Localizations",
+  "Author": "Platonymous",
+  "Version": "1.0.0",
+  "Description": "Add, replace or patch Localizations",
+  "EntryFile": "CustomLocalizations.dll",
+  "MinimumApiVersion": "1.1.0"
+}
