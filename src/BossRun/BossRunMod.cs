@@ -64,6 +64,11 @@ namespace BossRun
                 );
 
             harmony.Patch(
+                original: typeof(Enum).GetMethod(nameof(Enum.GetValues), System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static),
+                postfix: new HarmonyMethod(typeof(BossRunMod), nameof(GetEnumValues))
+                );
+
+            harmony.Patch(
                 original: typeof(MainMenu).GetMethod("Accept", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance),
                 postfix: new HarmonyMethod(typeof(BossRunMod), nameof(Accept))
                            );
@@ -170,7 +175,7 @@ namespace BossRun
                 }
 
             }
-            catch (Exception ex)
+            catch
             {
 
             }
@@ -215,7 +220,7 @@ namespace BossRun
 
                 }
             }
-            catch (Exception ex)
+            catch
             {
 
             }
@@ -246,7 +251,7 @@ namespace BossRun
                     lastSkip = Scene2d.Active;
                 }
             }
-            catch (Exception ex)
+            catch
             {
 
             }
@@ -258,11 +263,14 @@ namespace BossRun
             FSM fsm = (FSM)typeof(MainMenu).GetField("_fsm", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(__instance);
             SelectionMenuControl start = (SelectionMenuControl)typeof(MainMenu).GetField("_arcadeGameSelection", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(__instance);
             start.MaxShownItems = 7;
-            if (fsm.CurrentState == 4)
+            if (fsm.CurrentState == 5)
                 if (start.Selection == BossIndex)
                 {
                     IsBossRun = true;
-                    fsm.ChangeState((byte)5);
+                    GameInfo.Singleton.IsCustomGameMode = false;
+                    SelectionMenuControl _difficultySelection = (SelectionMenuControl) __instance.GetType().GetField("_difficultySelection", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(__instance);
+                    _difficultySelection.Selection = 1;
+                    fsm.ChangeState((byte)6);
                     lastSkip = null;
                 }
                 else
@@ -285,5 +293,23 @@ namespace BossRun
 
             }
         }
+
+        public static void GetEnumValues(Enum __instance, Type enumType, ref Array __result)
+        {
+            if (enumType.Name == "ArcadeItems")
+            {
+                var list = new List<object>();
+
+                foreach (var obj in __result)
+                    list.Add(obj);
+
+                BossIndex = list.Count();
+                list.Add(BossIndex);
+                __result = list.ToArray();
+                typeof(LocManager).GetMethod("AddLocToLanguage", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(LocManager.Singleton, new object[] { LocManager.Singleton.CurrentLanguage, "mnuArcade" + BossIndex, "Boss Run" });
+
+            }
+        }
     }
+
 }
